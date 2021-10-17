@@ -31,6 +31,19 @@ TEST_CASE("test 1, file", "[simple]"){
     REQUIRE(buffer.str() == "No solution\n");
 }
 
+TEST_CASE("file 006", ""){
+
+    std::ifstream input( "../006", std::ofstream::in);
+    std::stringstream output;
+    parseFile(input,output);
+    input.close();
+
+    std::ifstream answer("../006.a", std::ofstream::in);
+    std::string answerStr(std::istreambuf_iterator<char>{answer}, {});
+    answer.close();
+    REQUIRE(output.str() == answerStr);
+}
+
 TEST_CASE("test 2", ""){
     std::stringstream input, output;
     input<<"1\n"
