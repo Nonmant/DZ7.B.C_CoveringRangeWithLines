@@ -102,6 +102,7 @@ void parseFile(std::istream & input, std::ostream & output){
     }
 
     currentLines.clear();
+    int lastUsedLineRight = 0;
     for(int i = 0; i<events.size(); ++i){
         auto [pos, type, lineIndex] = events[i];
         if(i == 0 ||
@@ -109,21 +110,31 @@ void parseFile(std::istream & input, std::ostream & output){
             //before all events at pos
             if(pos > 0) {
                 int bestNumberOfSegments = -1;
+                int bestRight = -1;
                 int bestLine = -1;
-                bool alreadyUsed = false;
-                for(auto j: currentLines){
-                    if(usedLines.count(j)){
-                        alreadyUsed = true;
-                        break;
-                    }
-                    int numberOfSegments = lines[j].numberOfSegments;
-                    if(numberOfSegments > bestNumberOfSegments){
-                        bestLine = j;
-                        bestNumberOfSegments = numberOfSegments;
+                bool alreadyUsed = pos <=lastUsedLineRight;
+                if(!alreadyUsed){
+                    for(auto j: currentLines){
+                        if(usedLines.count(j)){
+                            alreadyUsed = true;
+                            break;
+                        }
+                        int numberOfSegments = lines[j].numberOfSegments;
+                        int right = lines[j].right;
+                        if(numberOfSegments > bestNumberOfSegments ||
+                                (numberOfSegments == bestNumberOfSegments && right > bestRight)){
+                            bestLine = j;
+                            bestNumberOfSegments = numberOfSegments;
+                            bestRight = lines[j].right;
+                        }
                     }
                 }
                 if(!alreadyUsed){
                     usedLines.insert(bestLine);
+                    lastUsedLineRight = lines[bestLine].right;
+                }
+                for(auto j: currentLines){
+                    --lines[j].numberOfSegments;
                 }
             }
         }
