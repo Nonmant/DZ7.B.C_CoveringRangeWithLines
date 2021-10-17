@@ -9,7 +9,7 @@ enum EventType : short int{
 };
 
 struct Line{
-    int numberOfSegments = 0, left, right;
+    int left, right;
     Line(int left, int right) : left(left), right(right){}
 };
 
@@ -58,10 +58,6 @@ void parseFile(std::istream & input, std::ostream & output){
             //before all events at pos
             if(pos > 0) {
 
-                for(auto j: currentLines){
-                    ++lines[j].numberOfSegments;
-                }
-
                 if(pos <= M){
                     if(currentLines.empty()){
                         noAnswer = true;
@@ -109,7 +105,6 @@ void parseFile(std::istream & input, std::ostream & output){
            std::get<0>(events[i-1]) != pos){
             //before all events at pos
             if(pos > 0) {
-                int bestNumberOfSegments = -1;
                 int bestRight = -1;
                 int bestLine = -1;
                 bool alreadyUsed = pos <=lastUsedLineRight;
@@ -119,12 +114,9 @@ void parseFile(std::istream & input, std::ostream & output){
                             alreadyUsed = true;
                             break;
                         }
-                        int numberOfSegments = lines[j].numberOfSegments;
                         int right = lines[j].right;
-                        if(numberOfSegments > bestNumberOfSegments ||
-                                (numberOfSegments == bestNumberOfSegments && right > bestRight)){
+                        if(right > bestRight){
                             bestLine = j;
-                            bestNumberOfSegments = numberOfSegments;
                             bestRight = lines[j].right;
                         }
                     }
@@ -132,9 +124,6 @@ void parseFile(std::istream & input, std::ostream & output){
                 if(!alreadyUsed){
                     usedLines.insert(bestLine);
                     lastUsedLineRight = lines[bestLine].right;
-                }
-                for(auto j: currentLines){
-                    --lines[j].numberOfSegments;
                 }
             }
         }
