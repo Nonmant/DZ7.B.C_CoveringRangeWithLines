@@ -1,4 +1,4 @@
-//https://contest.yandex.ru/contest/29396/problems/
+//https://contest.yandex.ru/contest/29396/problems/C/
 
 #include "funcs.h"
 #include <bits/stdc++.h>
